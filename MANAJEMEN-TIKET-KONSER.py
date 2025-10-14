@@ -7,6 +7,7 @@ import json
 def login_user():
     print("Sudah punya akun? (Y/N)")
     jwb = input(">> ")
+    jwb = jwb.upper().strip()
 
     if jwb == "Y":
         with open("akun.json") as f:
