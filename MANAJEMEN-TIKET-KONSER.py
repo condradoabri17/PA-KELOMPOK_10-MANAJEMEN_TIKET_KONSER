@@ -15,19 +15,13 @@ def login_user():
         username = input("Username : ")
         password = pwinput.pwinput("Password : ")
 
-        ditemukan = False
         for akun in data:
             if username == akun['username'] and password == akun['password']:
-                ditemukan = True
-                break 
-        
-        if ditemukan == True:
-            print("Login Berhasil")
-
-            return True
-        else :
-            print("Username atau Password salah")
-            return False
+                print("Login Berhasil")
+                return akun
+            
+        print("Username atau Password salah")
+        return None
     else:
         print("Buatkan akun baru")
         username = input("Username Baru: ")
@@ -42,18 +36,49 @@ def login_user():
         print("akun berhasil dibuat")
         return akun_baru
 
+def admin():
+    print("\nSelamat datang admin di sistem manajemen tiket konser\nSilahkan pilih menu dibawah ini:")
+    print("1. Lihat tiket-tiket yang sudah terjual")
+    print("2. Tambah tiket konser")
+    print("3. Update tiket konser")
+    print("4. logout")
+    
+    pilihan = int(input("Masukkan Pilihan Menu: "))
+    if pilihan == 1:
+        print("menu lihat tiket")
+    elif pilihan == 2:
+        print("menu Tambah tiket")
+    elif pilihan == 3:
+        print("menu update tiket")
+    else:
+        print("anda logout")
+    
 
-# print("\nmenu utama")
-# while True:
+# menu utama
+print("\nSelamat datang di sistem manajemen tiket konser\nMasukkan pilihan menu")
+print("1. Login")
+print("2. Keluar")
 
-#     print("\nSelamat datang di sistem manajemen tiket konser\nSilahkan Login!!")
+menu = int(input("masukkan menu: "))
 
-#     konfirmasi = 'Y'
-#     while konfirmasi == "Y":
-#         akun = login_user()
-#         if akun["role"] == "admin":
-#             print("masuk men")
-#         elif:
-#             print("akun pembeli")
+if menu == 1:
+    akun_login = None
+
+    while akun_login is None:
+        akun_login = login_user()
+
+        if akun_login is None:
+            print ("silahkan coba lagi\n")
+        else:
+            if akun_login['role'] == "admin":
+                admin()
+            elif akun_login["role"] == "user":
+                print("menu pembeli")
+
+else:
+    print("terimakasih, program selesai!!")
+
+
         
-#         input("Ingin Melanjutkan? =")
+        
+        
