@@ -1,0 +1,12 @@
+[
+    {
+        "id_tiket": "T002",
+        "nama_konser": "Konser tutup tahun",
+        "tanggal": "31-12-2025",
+        "lokasi": "Stadion Segiri",
+        "kategori": "Reguler",
+        "harga": 150000,
+        "stok": 50,
+        "terjual": 0
+    }
+]
