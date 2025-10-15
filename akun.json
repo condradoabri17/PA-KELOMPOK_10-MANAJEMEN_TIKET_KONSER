@@ -2,11 +2,13 @@
     {
         "username" : "gina26",
         "password" : "123",
-        "role"     : "user"
+        "role"     : "user",
+        "saldo"    : 200000
     },
     {
         "username" : "admin26",
         "password" : "admin123",
-        "role"     : "admin"
+        "role"     : "admin",
+        "saldo"    : 0
     }
 ]
