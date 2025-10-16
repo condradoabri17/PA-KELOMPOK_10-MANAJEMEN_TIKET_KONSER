@@ -239,7 +239,35 @@ def delete_tiket():
 
     print(f"\nData dengan ID {id_tiket_hapus} berhasil dihapus!")
 
-        
+def lihat_tiket():
+    print("Daftar Tiket Konser yang tersedia")
+
+    with open("tiket.json", "r") as r:
+        isi_data = r.read().strip()
+        if not isi_data:
+            print("Data Tiket yang tersedia belum ada. silahkan tambah atau buat!!")
+            return
+        data = json.loads(isi_data)
+
+    tabel_tiket = PrettyTable()
+    tabel_tiket.field_names = ["No", "Id Tiket", "Nama Konser", "Tanggal", "Lokasi", "Kategori", "Harga", "Stok"]
+
+    for i, tiket in enumerate(data, start=1):
+        tabel_tiket.add_row([
+            i,
+            tiket["id_tiket"],
+            tiket["nama_konser"],
+            tiket["tanggal"],
+            tiket["lokasi"],
+            tiket["kategori"],
+            tiket["harga"],
+            tiket["stok"],
+        ])
+
+    print(tabel_tiket)
+
+    return tabel_tiket
+
 def admin(): 
     while True: 
         print("\nSelamat datang admin di sistem manajemen tiket konser\nSilahkan pilih menu dibawah ini:") 
@@ -267,45 +295,43 @@ def admin():
         except ValueError: 
             print("Inputan harus angka!")
 
+def cek_saldo():
+
+    akun_login
+    print("Cek Saldo Anda")
+
+    with open("akun.json", "r") as f:
+        data = json.load(f)
+        
+
+
 def pembeli():
     while True:
         print("\nSilahkan pilih menu dibawah ini:")
         print("1. Lihat Tiket Yang dijual")
         print("2. Cek Saldo")
-        print("3. Beli tiket konser")
-        print("4. logout")
-        print("5. logout")
+        print("3. Isi Saldo")
+        print("4. Beli tiket konser")
+        print("5. Logout")
 
         try:
-            pilihan = input(int("Masukkan pilihan (wajib angka pilihan): "))
+            pilihan = int(input("Masukkan pilihan (wajib angka pilihan): "))
             if pilihan == 1:
-                print("menu lihat tiket")
+                lihat_tiket()
             elif pilihan == 2:
-                print("menu Tambah tiket")
+                print("Menu cek saldo")
             elif pilihan == 3:
-                print("menu update tiket")
+                print("Menu isi saldo")
             elif pilihan == 4:
-                print("menu hapus tiket")
+                print("Menu beli tiket")
             elif pilihan == 5:
-                print("anda logout")
+                print("Anda logout")
                 break
             else:
-                print("input tidak ada di daftar menu! coba lagi")
+                print("Input tidak ada di daftar menu! Coba lagi.")
         except ValueError:
-            print("Inputan berupa angka!")
+            print("Inputan harus berupa angka!")
 
-        if pilihan == 1:
-            print("menu lihat tiket")
-        elif pilihan == 2:
-            print("menu Tambah tiket")
-        elif pilihan == 3:
-            print("menu update tiket")
-        elif pilihan == 4:
-            print("anda logout")
-            break
-        else:
-            print("input tidak ada di daftar menu! coba lagi")
-    
 # menu utama
 while True:
     print("\nSelamat datang di sistem manajemen tiket konser\nMasukkan pilihan menu")
@@ -325,9 +351,9 @@ while True:
                 if akun_login['role'] == "admin":
                     admin()
                 elif akun_login["role"] == "user":
-                    print("menu pembeli")
+                    pembeli()
         elif menu == 2:
-            print("terimakasih, program selesai!!")
+            print("Terimakasih dan sampai jumpa ^^")
             break
         else:
             print("\nmenu tidak ada. ulang!!!")
