@@ -1,78 +1,114 @@
 from prettytable import PrettyTable
+from datetime import datetime
 import os
 import pwinput
 import json 
 
+session = None
 
 def login_user():
-    print("Sudah punya akun? (Y/N)")
-    jwb = input(">> ")
-    jwb = jwb.upper().strip()
+    while True:
+        print("Sudah punya akun? (Y/N)")
+        jwb = input(">> ")
+        jwb = jwb.upper().strip()
 
-    if jwb == "Y":
-        with open("akun.json") as f:
-            data = json.load(f)
+        if jwb == "Y":
+            with open("akun.json") as f:
+                data = json.load(f)
 
-        username = input("Username : ")
-        password = pwinput.pwinput("Password : ")
+            username = input("Username : ")
+            password = pwinput.pwinput("Password : ")
 
-        for akun in data:
-            if username == akun['username'] and password == akun['password']:
-                print("Login Berhasil")
-                return akun
-            
-        print("Username atau Password salah")
-        return None
-    else:
-        print("Buatkan akun baru")
-        username = input("Username Baru: ")
-        password = input("password Baru: ")
-        role = "user"
-        saldo = 0
+            for akun in data:
+                if username == akun['username'] and password == akun['password']:
+                    print("Login Berhasil")
+                    return akun
+                
+            print("Username atau Password salah")
+            return None
+            break
+        elif jwb == "N":
+            print("Buatkan akun baru")
+            username = input("Username Baru: ")
+            password = pwinput.pwinput("password Baru: ")
+            role = "user"
+            saldo = 0
 
-        akun_baru = {"username" : username, "password" : password, "role" : role, "saldo" : saldo}
-        data.append(akun_baru)
-        with open("akun.json", "w") as f:
-            json.dump(data, f, indent=4)
-        print("akun berhasil dibuat")
-        return akun_baru
+            akun_baru = {"username" : username, "password" : password, "role" : role, "saldo" : saldo}
+            data.append(akun_baru)
+            with open("akun.json", "w") as f:
+                json.dump(data, f, indent=4)
+            print("akun berhasil dibuat")
+            return akun_baru
+            break
+        else:
+            print("Inputan tidak tersedia, coba lagi!")
     
+
+
 def read_tiket():
     print("Daftar Tiket Konser yang tersedia")
 
-    with open("tiket.json", "r") as r:
-        isi_data = r.read().strip()
-        if not isi_data:
-            print("Data Tiket yang tersedia belum ada. silahkan tambah atau buat!!")
-            return
-        data = json.loads(isi_data)
+    with open("tiket.json", "r") as f:
+        data = json.load(f)
 
-    tabel_tiket = PrettyTable()
-    tabel_tiket.field_names = ["No", "Id Tiket", "Nama Konser", "Tanggal", "Lokasi", "Kategori", "Harga", "Stok", "Terjual"]
+    if not data:
+        print("Belum ada tiket yang tersedia.")
+        return
+        
+    if session and session.get("role") == "user":
+        table = PrettyTable(["ID Tiket", "Nama Konser", "Tanggal", "Harga", "Stok"])
+        for tiket in data:
+            if tiket.get("stok", 0) > 0:
+                table.add_row([
+                    tiket.get("id_tiket", "-"),
+                    tiket.get("nama_konser", "-"),
+                    tiket.get("tanggal", "-"),
+                    tiket.get("harga", "-"),
+                    tiket.get("stok", "-")
+                ])
+        else:
+            table = PrettyTable(["ID Tiket", "Nama Konser", "Tanggal", "Harga", "Stok", "Terjual"])
+            for tiket in data:
+                table.add_row([
+                    tiket.get("id_tiket", "-"),
+                    tiket.get("nama_konser", "-"),
+                    tiket.get("tanggal", "-"),
+                    tiket.get("harga", "-"),
+                    tiket.get("stok", "-"),
+                    tiket.get("terjual", "-")
+                ])
 
-    for i, tiket in enumerate(data, start=1):
-        tabel_tiket.add_row([
-            i,
-            tiket["id_tiket"],
-            tiket["nama_konser"],
-            tiket["tanggal"],
-            tiket["lokasi"],
-            tiket["kategori"],
-            tiket["harga"],
-            tiket["stok"],
-            tiket["terjual"]
-        ])
+        print(table)
 
-    print(tabel_tiket)
 
-    return tabel_tiket
+
+def id_tiket_otomatis():
+   
+    with open("tiket.json", "r") as f:
+        data = json.load(f)
+
+    if not data:
+        return "T001"
+    else:
+        last_id = data[-1]["id_tiket"]
+        angka = int(last_id[1:]) + 1
+        return f"T{angka:03d}"
 
 def create_tiket():
     print("Tambah Tiket Konser")
-
-    id_tiket = input("Masukkan Id Tiket: ")
+    
+    id_tiket =  id_tiket_otomatis()
+    print(f"ID Tiket Otomatis: {id_tiket}")
+    
     nama_konser = input("Masukkan Nama Konser: ")
-    tanggal = input("Masukkan Tanggal: ")
+    while True:
+        try:
+            tanggal_input = input("Masukkan Tanggal (dd-mm-yyyy): ")
+            tanggal = datetime.strptime(tanggal_input, "%d-%m-%Y")
+            break
+        except ValueError:
+            print("Inputan tidak valid silahkan coba lagi")
     lokasi = input("Masukkan Lokasi: ")
     while True:
         kategori = input("Masukkan Kategori (VIP/Reguler): ").strip()
@@ -83,21 +119,25 @@ def create_tiket():
     while True:
         try:
             harga = int(input("Masukkan harga (cth: 200000): "))
+            if harga <= 0:
+                raise ValueError 
             break
         except ValueError:
-            print("inputan harus berupa angka!!")
+            print("inputan harus berupa angka dan tidak boleh 0/negatif")
             
     while True:
         try:
             stok = int(input("Masukkan stok: "))
+            if stok <= 0:
+                raise ValueError
             break
         except ValueError:
-            print("inputan harus berupa angka!!")
+            print("inputan harus berupa angka dan tidak boleh 0 atau negatif!!")
 
     tiket_terbaru = {
         "id_tiket" : id_tiket,
         "nama_konser" : nama_konser,
-        "tanggal" : tanggal,
+        "tanggal": tanggal.strftime("%d-%m-%Y"),
         "lokasi" : lokasi,
         "kategori" : kategori,
         "harga" : harga,
@@ -266,7 +306,8 @@ def lihat_tiket():
 
     print(tabel_tiket)
 
-    return tabel_tiket
+    input("Tekan Enter untuk kembali ke menu...")
+
 
 def admin(): 
     while True: 
@@ -287,24 +328,151 @@ def admin():
                 update_tiket() 
             elif menu == 4: 
                 delete_tiket()
-            elif menu == 5: 
-                print("anda logout") 
-                break 
+            elif menu == 5:
+                global session
+                session = None
+                print("Anda logout")
+                break
             else: 
                 print("input tidak ada di daftar menu! coba lagi")
         except ValueError: 
             print("Inputan harus angka!")
+            
+def beli_tiket():
+    global session
+    if session is None:
+        print("Kamu belum login!")
+        return
+
+    print("\nDaftar Tiket Konser yang Tersedia")
+
+
+    with open("tiket.json", "r") as f:
+        data_tiket = json.load(f)
+
+    if not data_tiket:
+        print("Belum ada tiket yang tersedia.")
+        return
+
+    table = PrettyTable(["ID Tiket", "Nama Konser", "Tanggal", "Harga", "Stok"])
+    for tiket in data_tiket:
+        if tiket["stok"] > 0:
+            table.add_row([
+                tiket["id_tiket"],
+                tiket["nama_konser"],
+                tiket["tanggal"],
+                f"Rp{tiket['harga']:,}",
+                tiket["stok"]
+            ])
+    print(table)
+
+
+    id_tiket = input("Masukkan ID Tiket yang ingin dibeli: ").strip()
+    tiket_ditemukan = None
+    for tiket in data_tiket:
+        if tiket["id_tiket"].lower() == id_tiket.lower():
+            tiket_ditemukan = tiket
+            break
+
+    if tiket_ditemukan is None:
+        print("Tiket tidak ditemukan! Pastikan ID benar.")
+        return
+
+
+    try:
+        jumlah_beli = int(input("Masukkan jumlah tiket yang ingin dibeli: "))
+        if jumlah_beli <= 0:
+            print("Jumlah tiket harus lebih dari 0.")
+            return
+        if jumlah_beli > tiket_ditemukan["stok"]:
+            print("Jumlah pembelian melebihi stok yang tersedia.")
+            return
+    except ValueError:
+        print("Input jumlah tiket harus berupa angka!")
+        return
+
+    total_harga = tiket_ditemukan["harga"] * jumlah_beli
+
+    if session["saldo"] < total_harga:
+        print("Saldo Anda tidak cukup untuk melakukan pembelian ini.")
+        return
+    with open("akun.json", "r") as f:
+        data_akun = json.load(f)
+
+    for akun in data_akun:
+        if akun["username"] == session["username"]:
+            akun["saldo"] -= total_harga
+            session["saldo"] = akun["saldo"]
+            break
+
+    with open("akun.json", "w") as f:
+        json.dump(data_akun, f, indent=4)
+
+    tiket_ditemukan["stok"] -= jumlah_beli
+    tiket_ditemukan["terjual"] += jumlah_beli
+
+    with open("tiket.json", "w") as f:
+        json.dump(data_tiket, f, indent=4)
+
+    print("\n=== Transaksi Berhasil ===")
+    print(f"Tiket: {tiket_ditemukan['nama_konser']}")
+    print(f"Jumlah dibeli: {jumlah_beli}")
+    print(f"Total harga: Rp{total_harga:,}")
+    print(f"Sisa saldo Anda: Rp{session['saldo']:,}")
+
 
 def cek_saldo():
-
-    akun_login
+    global session
+    if session is None:
+        print("Kamu belum login")
+        return
+    
     print("Cek Saldo Anda")
 
     with open("akun.json", "r") as f:
         data = json.load(f)
+
+    for akun in data:
+        if akun["username"] == session["username"]:
+            print(f"Saldo anda saat ini: Rp{akun['saldo']:,}")
+            return
+
+    print("Akun tidak ditemukan dalam database.")
+
+def isi_saldo():
+    global session
+    if session is None:
+        print("Kamu belum login!")
+        return
+
+    print("\n=== Isi Saldo ===")
+
+    try:
+        tambah_saldo = int(input("Masukkan jumlah saldo yang ingin ditambahkan: "))
+        if tambah_saldo <= 0:
+            print("Jumlah saldo harus lebih dari 0!")
+            return
+    except ValueError:
+        print("Inputan harus berupa angka!")
+        return
+
+    
+    with open("akun.json", "r") as f:
+        data = json.load(f)
+
+    for akun in data:
+        if akun["username"] == session["username"]:
+            akun["saldo"] += tambah_saldo
+            session["saldo"] = akun["saldo"]  # update saldo di session juga
+            break
+
+    with open("akun.json", "w") as f:
+        json.dump(data, f, indent=4)
+
+    print(f"Saldo berhasil ditambahkan sebesar Rp{tambah_saldo:,}")
+    print(f"Saldo Anda sekarang: Rp{akun['saldo']:,}")
+
         
-
-
 def pembeli():
     while True:
         print("\nSilahkan pilih menu dibawah ini:")
@@ -314,55 +482,57 @@ def pembeli():
         print("4. Beli tiket konser")
         print("5. Logout")
 
-        try:
-            pilihan = int(input("Masukkan pilihan (wajib angka pilihan): "))
-            if pilihan == 1:
-                lihat_tiket()
-            elif pilihan == 2:
-                print("Menu cek saldo")
-            elif pilihan == 3:
-                print("Menu isi saldo")
-            elif pilihan == 4:
-                print("Menu beli tiket")
-            elif pilihan == 5:
-                print("Anda logout")
-                break
-            else:
-                print("Input tidak ada di daftar menu! Coba lagi.")
-        except ValueError:
+        menu_input = input("masukkan menu (angka menu): ").strip()
+        if not menu_input.isdigit():
             print("Inputan harus berupa angka!")
+            continue
+        menu = int(menu_input)
+
+        if menu == 1:
+            lihat_tiket()
+        elif menu == 2:
+            cek_saldo()
+        elif menu == 3:
+            print("Menu isi saldo")
+        elif menu == 4:
+            print("Menu beli tiket")
+        elif menu == 5:
+            global session
+            session = None
+            print("Anda logout")
+            break
+        else:
+            print("Input tidak ada di daftar menu! Coba lagi.")
 
 # menu utama
 while True:
-    print("\nSelamat datang di sistem manajemen tiket konser\nMasukkan pilihan menu")
+    print("\nSelamat datang di sistem manajemen tiket konser")
     print("1. Login")
     print("2. Keluar")
 
     try:
-        menu = int(input("masukkan menu (angka menu): "))
+        menu = int(input("Masukkan menu (angka menu): ").strip())
+        
         if menu == 1:
-            akun_login = None
-            while akun_login is None:
-                akun_login = login_user()
-
-            if akun_login is None:
-                print ("silahkan coba lagi\n")
-            else:
-                if akun_login['role'] == "admin":
+            akun = login_user()
+            if akun:
+                session = akun
+                if session['role'] == "admin":
                     admin()
-                elif akun_login["role"] == "user":
+                elif session["role"] == "user":
                     pembeli()
+                session = None  # setelah logout dari submenu, pastikan sesi dikosongkan
+            else:
+                print("Login gagal, silahkan coba lagi.")
+        
         elif menu == 2:
             print("Terimakasih dan sampai jumpa ^^")
             break
+        
         else:
-            print("\nmenu tidak ada. ulang!!!")
-    except ValueError:
-        print("\ninputan harus angka")
-
-
+            print("Menu tidak ada, silahkan coba lagi.")
     
+    except ValueError:
+        print("Inputan harus berupa angka!")
 
-            
-            
             
