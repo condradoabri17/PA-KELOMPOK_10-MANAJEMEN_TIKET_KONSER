@@ -6,8 +6,8 @@
         "lokasi": "Stadion Segiri",
         "kategori": "Reguler",
         "harga": 150000,
-        "stok": 50,
-        "terjual": 0
+        "stok": 38,
+        "terjual": 12
     },
     {
         "id_tiket": "T003",
@@ -19,5 +19,34 @@
         "stok": 100,
         "terjual": 0
     },
-
+    {
+        "id_tiket": "T005",
+        "nama_konser": "Live Aid",
+        "tanggal": "06-09-1965",
+        "lokasi": "London",
+        "kategori": "Reguler",
+        "harga": 300000,
+        "stok": 99,
+        "terjual": 0
+    },
+    {
+        "id_tiket": "T006",
+        "nama_konser": "dsafsgdhyterwe",
+        "tanggal": "21-04-2026",
+        "lokasi": "tes",
+        "kategori": "VIP",
+        "harga": 20000000,
+        "stok": 100000,
+        "terjual": 0
+    },
+    {
+        "id_tiket": "T007",
+        "nama_konser": "dafsgdhgfad",
+        "tanggal": "21-04-2026",
+        "lokasi": "tes",
+        "kategori": "Reguler",
+        "harga": 20000000,
+        "stok": 100000,
+        "terjual": 0
+    }
 ]

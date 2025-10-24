@@ -1,14 +1,20 @@
 [
     {
-        "username" : "gina26",
-        "password" : "123",
-        "role"     : "user",
-        "saldo"    : 200000
+        "username": "gina26",
+        "password": "123",
+        "role": "user",
+        "saldo": 999999999989990000000003366678908276540
     },
     {
-        "username" : "admin26",
-        "password" : "admin123",
-        "role"     : "admin",
-        "saldo"    : 0
+        "username": "admin26",
+        "password": "admin123",
+        "role": "admin",
+        "saldo": 0
+    },
+    {
+        "username": "abri21",
+        "password": "123",
+        "role": "user",
+        "saldo": 0
     }
 ]
