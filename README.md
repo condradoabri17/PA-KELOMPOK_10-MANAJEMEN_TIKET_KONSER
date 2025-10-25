@@ -130,6 +130,7 @@ Admin dapat menambah, melihat, mengedit, dan menghapus tiket konser, sedangkan u
 ![](asset/gambar(1).jpg)
 
 **Tampilan Menu Pembeli (User):**
+
 ![](asset/gambar(2).jpg)
 ### Cara kerja dan cara menjalankan fitur
 
