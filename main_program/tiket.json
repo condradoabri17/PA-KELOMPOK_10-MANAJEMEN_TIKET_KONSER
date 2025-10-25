@@ -40,13 +40,13 @@
         "terjual": 0
     },
     {
-        "id_tiket": "T007",
-        "nama_konser": "dafsgdhgfad",
-        "tanggal": "21-04-2026",
-        "lokasi": "tes",
-        "kategori": "Reguler",
-        "harga": 20000000,
-        "stok": 100000,
+        "id_tiket": "T008",
+        "nama_konser": "gigs for everyday",
+        "tanggal": "30-09-2026",
+        "lokasi": "stadion palaran",
+        "kategori": "VIP",
+        "harga": 200000,
+        "stok": 20,
         "terjual": 0
     }
 ]

@@ -5,6 +5,9 @@ import pwinput
 import random
 import string
 import json 
+import os
+print("Working directory:", os.getcwd())
+
 
 session = None
 
@@ -197,22 +200,25 @@ def create_tiket():
     print(f"tiket dengan ID {tiket_terbaru['id_tiket']} berhasil ditambahkan ")
 
 def update_tiket():
-    print("Update data Tiket")
+    print("Update Data Tiket")
 
-    with open("tiket.json", "r") as f:
-        cek_data = f.read().strip()
-        if not cek_data:
-            print("Belum ada data tiket yang tersedia untuk diupdate.")
-            return
-        data = json.loads(cek_data)
-    
+    try:
+        with open("tiket.json", "r") as f:
+            cek_data = f.read().strip()
+            if not cek_data:
+                print("Belum ada data tiket yang tersedia untuk diupdate.")
+                return
+            data = json.loads(cek_data)
+    except FileNotFoundError:
+        print("File tiket.json tidak ditemukan!")
+        return
+
     read_tiket()
 
     tiket_ditemukan = None
 
-    while tiket_ditemukan == None:
-
-        id_tiket_edit = input("Masukkan ID Tiket yang mau diedit: ")
+    while tiket_ditemukan is None:
+        id_tiket_edit = input("Masukkan ID Tiket yang mau diedit: ").strip()
 
         for tiket in data:
             if tiket["id_tiket"] == id_tiket_edit:
@@ -220,8 +226,7 @@ def update_tiket():
                 break
 
         if tiket_ditemukan is None:
-            print(f"Tiket dengan ID {id_tiket_edit} tidak ditemukan")
-            
+            print(f"Tiket dengan ID {id_tiket_edit} tidak ditemukan. Coba lagi!")
 
     tabel_edit = PrettyTable()
     tabel_edit.field_names = ["Id Tiket", "Nama Konser", "Tanggal", "Lokasi", "Kategori", "Harga", "Stok", "Terjual"]
@@ -235,46 +240,81 @@ def update_tiket():
         tiket_ditemukan["stok"],
         tiket_ditemukan["terjual"]
     ])
-    print("\nData Tiket Yang Dipilih: ")
+    print("\nData Tiket Yang Dipilih:")
     print(tabel_edit)
 
+    print("\nTekan Enter jika tidak ingin mengubah nilai pada kolom tertentu.\n")
+
     nama_baru = input(f"Nama Konser [{tiket_ditemukan['nama_konser']}]: ").strip()
-    tanggal_baru = input(f"Tanggal [{tiket_ditemukan['tanggal']}]: ").strip()
-    lokasi_baru = input(f"Lokasi [{tiket_ditemukan['lokasi']}]: ").strip()
-    kategori_baru = input(f"Kategori [{tiket_ditemukan['kategori']}]: ").strip()
 
     while True:
-    
+        tanggal_baru = input(f"Tanggal [{tiket_ditemukan['tanggal']}] (format: dd-mm-yyyy): ").strip()
+        if not tanggal_baru:
+            break
+        try:
+            tanggal = datetime.strptime(tanggal_baru, "%d-%m-%Y")
+            sekarang = datetime.now()
+            if tanggal < sekarang:
+                print("Tanggal tidak boleh lebih lama dari hari ini!")
+            else:
+                tiket_ditemukan["tanggal"] = tanggal.strftime("%d-%m-%Y")
+                break
+        except ValueError:
+            print("Format tanggal tidak valid! Gunakan format dd-mm-yyyy.")
+
+    lokasi_baru = input(f"Lokasi [{tiket_ditemukan['lokasi']}]: ").strip()
+
+    while True:
+        kategori_baru = input(f"Kategori [{tiket_ditemukan['kategori']}] (VIP/Reguler): ").strip().lower()
+        if not kategori_baru:
+            break
+        if kategori_baru == "vip" or kategori_baru == "reguler":
+            tiket_ditemukan["kategori"] = "VIP" if kategori_baru == "vip" else "Reguler"
+            break
+        else:
+            print("Kategori harus VIP atau Reguler!")
+
+    while True:
         harga_baru = input(f"Harga [{tiket_ditemukan['harga']}]: ").strip()
         if not harga_baru:
             break
         try:
-            tiket_ditemukan['harga'] = int(harga_baru)
-            break
-        except:
-            print("Input harga harus berupa angka!!")
-        
-    while True:
+            harga_int = int(harga_baru)
+            if harga_int <= 0:
+                print("Harga tidak boleh 0 atau minus!")
+            elif harga_int > 20000000:
+                print("Harga maksimal adalah 20.000.000!")
+            else:
+                tiket_ditemukan["harga"] = harga_int
+                break
+        except ValueError:
+            print("Input harga harus berupa angka!")
 
+    while True:
         stok_baru = input(f"Stok [{tiket_ditemukan['stok']}]: ").strip()
         if not stok_baru:
             break
         try:
-            tiket_ditemukan["stok"] = int(stok_baru)
-            break
-        except:
-            print("Input stok harus angka")
+            stok_int = int(stok_baru)
+            if stok_int <= 0:
+                print("Stok tidak boleh 0 atau minus!")
+            elif stok_int > 100000:
+                print("Stok tidak boleh lebih dari 100.000 tiket!")
+            else:
+                tiket_ditemukan["stok"] = stok_int
+                break
+        except ValueError:
+            print("Input stok harus berupa angka!")
 
-    if nama_baru: tiket_ditemukan['nama_konser'] = nama_baru
-    if tanggal_baru: tiket_ditemukan['tanggal'] = tanggal_baru
-    if lokasi_baru: tiket_ditemukan['lokasi'] = lokasi_baru
-    if kategori_baru: tiket_ditemukan['kategori'] = kategori_baru
-
+    if nama_baru:
+        tiket_ditemukan['nama_konser'] = nama_baru
+    if lokasi_baru:
+        tiket_ditemukan['lokasi'] = lokasi_baru
 
     with open("tiket.json", "w") as f:
         json.dump(data, f, indent=4)
 
-    print(f"Tiket dengan ID {id_tiket_edit} berhasil diperbarui!")
+    print(f"\nTiket dengan ID {id_tiket_edit} berhasil diperbarui!\n")
 
 def delete_tiket():
     print("Hapus Tiket")
@@ -384,17 +424,18 @@ def beli_tiket():
 
     with open("tiket.json", "r") as f:
         data_tiket = json.load(f)
-
-    id_tiket = input("\nMasukkan ID Tiket yang ingin dibeli: ").strip()
+    
+    
     tiket_ditemukan = None
-    for tiket in data_tiket:
-        if tiket["id_tiket"].lower() == id_tiket.lower():
-            tiket_ditemukan = tiket
-            break
+    while tiket_ditemukan is None:
+        id_tiket = input("\nMasukkan ID Tiket yang ingin dibeli: ").strip()
+        for tiket in data_tiket:
+            if tiket["id_tiket"].lower() == id_tiket.lower():
+                tiket_ditemukan = tiket
+                break
 
-    if tiket_ditemukan is None:
-        print("Tiket tidak ditemukan! Pastikan ID benar.")
-        return
+        if tiket_ditemukan is None:
+            print("Tiket tidak ditemukan! Pastikan ID benar.")
 
     while True:
         metode = input("Pilih metode pembelian (online/offline): ").strip().lower()
@@ -552,32 +593,34 @@ def pembeli():
 
 # menu utama
 while True:
-    print("\nSelamat datang di sistem manajemen tiket konser")
-    print("1. Login")
-    print("2. Keluar")
+    try:
+        print("\nSelamat datang di sistem manajemen tiket konser")
+        print("1. Login")
+        print("2. Keluar")
 
 
-    menu = int(input("Masukkan menu (angka menu): "))
-    
-    if menu == 1:
-        akun = login_user()
-        if akun:
-            session = akun
-            if session['role'] == "admin":
-                admin()
-            elif session["role"] == "user":
-                pembeli()
-            session = None  # setelah logout dari submenu, pastikan sesi dikosongkan
+        menu = int(input("Masukkan menu (angka menu): "))
+        
+        if menu == 1:
+            akun = login_user()
+            if akun:
+                session = akun
+                if session['role'] == "admin":
+                    admin()
+                elif session["role"] == "user":
+                    pembeli()
+                session = None  # setelah logout dari submenu, pastikan sesi dikosongkan
+            else:
+                print("Login gagal, silahkan coba lagi.")
+        
+        elif menu == 2:
+            print("Terimakasih dan sampai jumpa ^^")
+            break
+        
         else:
-            print("Login gagal, silahkan coba lagi.")
-    
-    elif menu == 2:
-        print("Terimakasih dan sampai jumpa ^^")
-        break
-    
-    else:
-        print("Menu tidak ada, silahkan coba lagi.")
-
+            print("Menu tidak ada, silahkan coba lagi.")
+    except ValueError:
+        print("Inputan harus berupa angka!")
 
             
  

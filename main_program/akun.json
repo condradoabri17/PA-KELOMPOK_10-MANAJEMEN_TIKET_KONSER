@@ -16,5 +16,11 @@
         "password": "123",
         "role": "user",
         "saldo": 0
+    },
+    {
+        "username": "abri27",
+        "password": "123",
+        "role": "user",
+        "saldo": 5000000
     }
 ]
