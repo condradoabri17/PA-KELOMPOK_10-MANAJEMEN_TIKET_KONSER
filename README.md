@@ -1,9 +1,18 @@
-# Sistem Manajemen Tiket Konser
+# Sistem Manajemen Tiket Konser Kelompok 10
 
 Program ini adalah sistem manajemen tiket konser yang dibuat dengan bahasa pemrograman Python.  
 
 Terdapat dua role pengguna yaitu **Admin** dan **User (pembeli tiket)**.  
 Admin dapat menambah, melihat, mengedit, dan menghapus tiket konser, sedangkan user bisa membeli tiket secara online maupun offline, mengisi saldo, dan mengecek saldo mereka.
+
+## Anggota Kelompok:
+
+- Naisyla Auliya Rahmi Putri 
+  NIM: 2509116078
+- Regina Jelita Ningsih
+  NIM: 2509116061
+- Condrado Alain Sharon
+  NIM: 2509116069
 ## Akun
 
 ### Role Admin
