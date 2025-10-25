@@ -42,55 +42,39 @@ Admin dapat menambah, melihat, mengedit, dan menghapus tiket konser, sedangkan u
 2. Buat file json untuk awal yaitu untuk akun (akun.json) dan tiket (tiket.json):
 
 **akun.json:**
-```json
+``` json
 [
-  {
-    "username": "gina26",
-
-    "password": "123",
-
-    "role": "user",
-
-    "saldo": 0
-
-   },
-
-  {
-     "username": "admin26",
-
-     "password": "admin123",
-
-     "role": "admin",
-
-     "saldo": 0
-  }
+    {
+        "username": "gina26",
+        "password": "123",
+        "role": "user",
+        "saldo": 0
+    },
+    {
+        "username": "admin26",
+        "password": "admin123",
+        "role": "admin",
+        "saldo": 0
+    }
 ]
+
 ```
 
 **tiket.json:**
 ```json
 [
-    {
-
-        "id_tiket": "T002",
-
-        "nama_konser": "Konser tutup tahun",
-
-        "tanggal": "31-12-2025",
-
-        "lokasi": "Stadion Segiri",
-
-        "kategori": "Reguler",
-
-        "harga": 150000,
-
-        "stok": 38,
-
-        "terjual": 12
-
-    }
-
+    {
+        "id_tiket": "T002",
+        "nama_konser": "Konser tutup tahun",
+        "tanggal": "31-12-2025",
+        "lokasi": "Stadion Segiri",
+        "kategori": "Reguler",
+        "harga": 150000,
+        "stok": 38,
+        "terjual": 12
+    }
 ]
+
 ```
 
 3. Buat file python dengan nama `MANAJEMEN-TIKET-KONSER.py` Pastikan file python dan json berada dalam folder yang sama:
