@@ -44,38 +44,32 @@ Admin dapat menambah, melihat, mengedit, dan menghapus tiket konser, sedangkan u
 **akun.json:**
 ```json
 [
+  {
+    "username": "gina26",
 
-    {
+    "password": "123",
 
-            "username": "gina26",
+    "role": "user",
 
-            "password": "123",
+    "saldo": 0
 
-            "role": "user",
+   },
 
-            "saldo": 0
+  {
+     "username": "admin26",
 
-        },
+     "password": "admin123",
 
-        {
+     "role": "admin",
 
-            "username": "admin26",
-
-            "password": "admin123",
-
-            "role": "admin",
-
-            "saldo": 0
-
-    }
-
+     "saldo": 0
+  }
 ]
 ```
 
 **tiket.json:**
 ```json
 [
-
     {
 
         "id_tiket": "T002",
