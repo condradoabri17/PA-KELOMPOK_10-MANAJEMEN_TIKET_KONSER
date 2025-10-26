@@ -243,3 +243,20 @@ main_program
 ## Tujuan Program
 
 Program ini dibuat sebagai syarat kelulusan proyek akhir mata kuliah Dasar-Dasar Pemrograman dan sebagai latihan logika serta pengelolaan database menggunakan JSON dan Python. Latihan ini cocok untuk latihan pembelajaran dasar CRUD dan dasar untuk memahami dasar cara kerja login.
+
+## Flowchart
+**Menu Utama**
+
+![FC-10-Menu Utama drawio](https://github.com/user-attachments/assets/2e3504b8-aa0a-4b33-8882-daa1669787e2)
+
+**Login**
+
+![FC-10-Login drawio](https://github.com/user-attachments/assets/ea7b9678-2c6a-4ef2-8f45-6bca0ca76551)
+
+**Menu Utama User**
+
+![FC-10-Menu User drawio](https://github.com/user-attachments/assets/f75cea35-3834-486f-8254-f3d6d4104b74)
+
+**Menu Utama Admin**
+
+![FC-10-Menu Admin drawio](https://github.com/user-attachments/assets/c77906de-d37d-4e95-8642-aa5d7681fe40)
